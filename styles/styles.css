@@ -1,27 +1,30 @@
 html, body, p {
-	height: 96%;
 	margin: 0;
 	padding: 0;
 	width:100%;	
+	height: 96%;
 	background-color: #F7F7F8;
 }
 
 .mainContainer {
 	margin-top: 50px;
+	height: 100%;
+	background-color: #F7F7F8;
 }
 
-.panel {
-	float:right;	
+.mainContainer .panel {
+	float:right;
 	background-color: #F7F7F8;
+	height: 100%;
 }
 
 .destinations div, .direction p, .places div{
 	margin-left: 10px;
 }
 
-.destinations {
-	height: 90%;
-	width:30%;
+.mainContainer .destinations {
+	height: 96%;
+	width:30%;	
 }
 
 .destinations .textfield, .places .textfield {
@@ -49,7 +52,7 @@ html, body, p {
 	margin-bottom: 5px;
 }
 
-.destinations .normalButton, .places .normalButton {
+.destinations .normalButton {
 	width : 30%;
 	float : right;
 	margin-right: 28px;
@@ -66,10 +69,10 @@ html, body, p {
 	margin-top: 5px;
 }
 
-.direction {	
-	overflow-y: scroll; 
-	width:30%;
-	height:95.2%;
+.mainContainer .direction {	
+	height: 96%;
+	width: 30%;
+	overflow-y: scroll;
 }
 
 .direction .edit {
@@ -77,8 +80,8 @@ html, body, p {
 	width : 100%;
 }
 
-.places {
-	height: 90%;
+.mainContainer .places {
+	height: 96%;
 	width:30%;
 }
 
@@ -86,6 +89,12 @@ html, body, p {
 	width : 90%;
 	margin-bottom: 5px;
 	margin-left: 0;
+}
+
+.places .normalButton {
+	width : 30%;
+	display : inline-block;
+	margin-left: 178px;
 }
 
 
@@ -103,4 +112,3 @@ html, body, p {
 .adp-summary, .adp-text {
 	text-align: center;
 }
-

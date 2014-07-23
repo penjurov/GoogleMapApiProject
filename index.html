@@ -5,10 +5,12 @@
 	<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
 	<meta charset="utf-8">
 	<title>Карта на България</title>
+	<link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet">
 	<link href="styles/styles.css" rel="stylesheet" />	
     <link href="styles/kendo.common.min.css" rel="stylesheet" />
     <link href="styles/kendo.blueopal.min.css" rel="stylesheet" />
     <link href="styles/styles.css" rel="stylesheet" />
+    <link href="styles/star-rating.css" media="all" rel="stylesheet" type="text/css"/>
     <link href="styles/bootstrap.css" rel="stylesheet">
 	<script src="scripts/libs/require.js" data-main="scripts/app"></script> 
 </head>
@@ -32,7 +34,7 @@
 	      </ul>
 	    </div>
 	  </div>
-	</div>
+	</div>	
 	<div id="container" class = "mainContainer">
 		<div id="map-canvas" class = "map-canvas"></div>
 		<div id = "destinations-panel" class="destinations panel">
@@ -41,7 +43,7 @@
 				<input type="text" id = "start" class = "textfield"> 
 				<label>Waypoints:</label> 
 				<input type="text" id = "waypoint" class = "shortField textfield"> 
-				<button id="addButton" class="k-primary addButton">+</button>
+				<button id="addWayPoint" class="k-primary addButton">+</button>
 				<div id="waypoints"> </div>
 				<label>Destination:</label> 
 				<input type="text" id = "end" class = "textfield">
@@ -51,7 +53,7 @@
 					<option value="BICYCLING">Bycicle</option>
 					<option value="TRANSIT">Transit</option>
 				</select>
-				<button id="submitButton" class="k-primary normalButton">Confirm</button>
+				<button id="calcRoute" class="k-primary normalButton">Confirm</button>
 			</div>
 		</div>
 		<div class="direction panel" id="direction-panel">
@@ -62,6 +64,7 @@
 			<div>
 				<label>Change location:</label>
 				<input type="text" id = "newLocation" class = "textfield"> 
+				<button id="setLocation" class="k-primary normalButton">Change</button>
 				<label>Search for:</label>
 				<select multiple = "multiple" id = "places-container" class = "listBox" data-placeholder="Select types...">				
 				</select>
@@ -69,6 +72,7 @@
 				<input type="text" id = "locationDistance" class = "textfield">
 				<button id="findButton" class="k-primary normalButton">Find</button>
 			</div>
+			<div id="topFive-container"></div>
 		</div>
 	</div>
 	<script id="places-template" type="text/x-handlebars-template">
@@ -78,7 +82,21 @@
              	{{name}}               
             </option>
             {{/each}}           
-        </table>
+        </select>
+    </script>
+	<script id="topFive-template" type="text/x-handlebars-template">
+        <div class = "topFive-list"> 
+        	<h4> Top by rating </h4>     
+            {{#each places}}
+            <div> 
+            	<strong> {{name}} </strong>
+            	</br>
+            	<em> {{vicinity}} </em>
+            	</br>
+            	<em> rating : {{rating}} </em>
+            </div>
+            {{/each}}           
+        </div>
     </script>
   </body>
 </html>

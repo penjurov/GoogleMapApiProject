@@ -32,9 +32,10 @@ define(["jquery", "kendo", "handlebars"], function ($) {
 
         UI.prototype.convertToKendo = function() {
             $("#editSearch").kendoButton();
-            $("#submitButton").kendoButton();
-            $("#addButton").kendoButton();
+            $("#calcRoute").kendoButton();
+            $("#addWayPoint").kendoButton();
             $("#findButton").kendoButton();
+            $("#setLocation").kendoButton();
 
             $("#start").kendoMaskedTextBox();
             $("#waypoint").kendoMaskedTextBox();
@@ -43,7 +44,7 @@ define(["jquery", "kendo", "handlebars"], function ($) {
             $("#locationDistance").kendoMaskedTextBox();
 
             $("#mode").kendoComboBox();
-      };
+        };
 
         var removePoint = function(selector) {
             var height = $('.destinations').height() - 25,
@@ -55,14 +56,25 @@ define(["jquery", "kendo", "handlebars"], function ($) {
         };
 
         UI.prototype.addPlaces = function(items) {
-            var placesTemplate = Handlebars.compile($('#places-template').html());
-
-            $('#places-container').html(placesTemplate({
-                places : items
-            }));
+            handleBarConvert($('#places-template'), $('#places-container'), items);
 
             $("#places-container").kendoMultiSelect().data("kendoMultiSelect");
         };
+
+        UI.prototype.addTopFive = function(items) {
+            $('#topFive-container').text('');
+            if (items.length >0 ) {
+               handleBarConvert($('#topFive-template'), $('#topFive-container'), items);
+            }
+        };
+
+        function handleBarConvert(template, container, items) {
+            var currentTemplate = Handlebars.compile(template.html());
+
+            container.html(currentTemplate({
+                places : items
+            }));
+        }
 
         return UI;
     })();

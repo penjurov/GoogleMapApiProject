@@ -7,6 +7,7 @@
 			handlebars: "libs/handlebars",
 			underscore: "libs/underscore",
 			async: 'libs/async',
+			starrating: 'libs/star-rating',
 			map: "map/map",
 			events : "map/events",
 			ui: "map/ui",
@@ -19,7 +20,7 @@
     }
 	});
 
-	require(["map", "ui", "places", "events", "jquery", "bootstrap"], function (Map, UI, places) {
+	require(["map", "ui", "places", "events", "jquery", "bootstrap", "starrating"], function (Map, UI, places) {
 		map = new Map();
 		map.initialize();
 

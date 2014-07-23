@@ -1,4 +1,4 @@
-define(["jquery", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places", "underscore"], function ($) {
+define(["jquery", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places", "underscore", "starrating", "ui"], function ($) {
 	'use strict';
 	var Map = (function () {
 		var CENTER_LATITUDE = 42.52,
@@ -93,7 +93,7 @@ define(["jquery", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&librari
 
 		Map.prototype.addPoint = function(point) {
 			this.waypts.push({
-			location: point,
+				location: point,
 				stopover: true
 			});
 		};
@@ -119,6 +119,19 @@ define(["jquery", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&librari
 			}
 		};
 
+		Map.prototype.setLocation = function(location) {
+			var geo = new google.maps.Geocoder();
+
+			geo.geocode({'address': location},function(results, status){
+				if (status == google.maps.GeocoderStatus.OK) {
+					var center = results[0].geometry.location;
+					map.setCenter(center);
+				} else {
+					alert("Geocode was not successful for the following reason: " + status);
+				}
+			});
+		};
+
 		Map.prototype.getPlaces = function(radius, types) {
 			var service = new google.maps.places.PlacesService(map),
 				request = {
@@ -129,21 +142,78 @@ define(["jquery", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&librari
 
 			service.nearbySearch(request, function(places) {
 				var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+				console.log(places);
 				places.forEach(function (place) {
 					var icon = {
-						url : place.icon || iconBase,
-						scaledSize : new google.maps.Size(24, 24)
-					};
+							url : place.icon || iconBase,
+							scaledSize : new google.maps.Size(24, 24)
+						},
+						marker = new google.maps.Marker({
+							map: map,
+							position: place.geometry.location,
+							title: place.name,
+							icon: icon
+						});
 
-					var marker = new google.maps.Marker({
-						map: map,
-						position: place.geometry.location,
-						title: place.name,
-						size: new google.maps.Size(20, 20),
-						icon: icon
+					google.maps.event.addListener(marker, 'click', function() {
+						createInfoWindow(place, marker);
 					});
 				});
+
+				getTopFive(places);
 			});
+		};
+
+		var createInfoWindow = function(place, marker){
+			var content = '',
+				title = "<strong>" + place.name + "</strong> </br>";
+				
+			content += title;
+
+			if (place.vicinity) {
+				var address = "<em>" + place.vicinity + "</em> </br>";
+				content += address;
+			}
+
+			if (place.photos) {
+				var photo = place.photos[0],
+					photoUrl = photo.getUrl({
+					maxWidth: photo.height,
+					maxHeight: photo.width
+				});
+
+				content += '<img src=' + photoUrl + ' width = "' + photo.width/2 + ' px" height ="' + photo.height/2 + 'px"> </br>';
+			}
+
+			if (place.rating) {
+				var starsWidth = 20 * place.rating;
+				var rating = '<div class="star-rating rating-s rating-active"> <div class="rating-container rating-gly-star" data-content=""><div class="rating-stars" data-content="" style="width: ' + starsWidth + '%;"></div></div></div>';
+
+				content += rating;
+			}
+								
+			var	infowindow = new google.maps.InfoWindow({
+				map: map,
+				position : marker.position,
+				content : content
+			});
+		};
+
+		var getTopFive = function(places) {
+			var topFive = _.chain(places)
+				.filter(function(place){
+					if (place.rating) {
+						return true;
+					}
+
+					return false;
+				})
+				.sortBy(function(place) {
+					return place.rating * -1;
+				})
+				.value();
+
+			ui.addTopFive(topFive.slice(0, 5));
 		};
 
 		var computeTotalDistance = function(result) {

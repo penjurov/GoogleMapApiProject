@@ -1,13 +1,13 @@
 define(["jquery", "ui"], function ($) {
 	'use strict';
 
-	$('#submitButton').click(function() {
+	$('#calcRoute').click(function() {
 		$('#destinations-panel').hide();
 		$('#direction-panel').show();
 		map.calcRoute();
 	});
 
-	$('#addButton').click(function() {
+	$('#addWayPoint').click(function() {
 		var point = $('#waypoint').val(),
 			numberOfPoints = map.points().length;
 			
@@ -24,10 +24,15 @@ define(["jquery", "ui"], function ($) {
 	});
 
 	$('#findButton').click(function() {
-		var radius = $('#locationDistance').val() || 1000;
+		var radius = $('#locationDistance').val() || 1000,
+			types = $("#places-container").data("kendoMultiSelect");
 
-		var types = $("#places-container").data("kendoMultiSelect");
 		map.getPlaces(radius, types.value());
+	});
+
+	$('#setLocation').click(function() {
+		map.setLocation($('#newLocation').val());
+		$('#newLocation').val('');
 	});
 
 	$('#destinationsLink').bind('click', function() {
@@ -44,6 +49,7 @@ define(["jquery", "ui"], function ($) {
 		$('#direction-panel').hide();
 		$('#places-panel').show();
 
+
 		changeActive($(this));
 		map.getCurrentLocation();
 	});
@@ -52,6 +58,7 @@ define(["jquery", "ui"], function ($) {
 		$('#direction-panel').hide();
 		$('#places-panel').hide();
 
+		
 		var interval = setInterval(function(){
 			map.initialize();
 			clearInterval(interval);
