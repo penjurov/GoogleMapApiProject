@@ -1,0 +1,68 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+	<meta charset="utf-8">
+	<title>Карта на България</title>
+	<link href="styles/styles.css" rel="stylesheet" />	
+    <link href="styles/kendo.common.min.css" rel="stylesheet" />
+    <link href="styles/kendo.blueopal.min.css" rel="stylesheet" />
+    <link href="styles/styles.css" rel="stylesheet" />
+    <link href="styles/bootstrap.css" rel="stylesheet">
+	<script src="scripts/libs/require.js" data-main="scripts/app"></script> 
+</head>
+	<body>
+	<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+	  <div class="container">
+	    <div class="navbar-header">
+	      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+	        <span class="sr-only">Toggle navigation</span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	      </button>
+	      <a class="navbar-brand" href="#">Google API Test Project</a>
+	    </div>
+	    <div class="collapse navbar-collapse">
+	      <ul class="nav navbar-nav">
+	        <li class="active" id = "destinationsLink" ><a href="#">Destinations</a></li>
+	        <li id="placesLink"><a href="#">Search places</a></li>
+
+	      </ul>
+	    </div>
+	  </div>
+	</div>
+	<div id="container" class = "mainContainer">
+		<div id="map-canvas" class = "canvas"></div>
+		<div id = "destinations-panel" class="destinations panel">
+	    	<div>
+				<label>Starting:</label>
+				<input type="text" id = "start" class = "textfield"> 
+				<label>Waypoints:</label> 
+				<input type="text" id = "waypoint" class = "shortField textfield"> 
+				<button id="addButton" class="k-primary add">+</button>
+				<div id="waypoints"> </div>
+				<label>Destination:</label> 
+				<input type="text" id = "end" class = "textfield">
+				<select id = "mode" class = "combobox">
+					<option value="DRIVING">Driving</option>
+					<option value="WALKING">Walking</option>
+					<option value="BICYCLING">Bycicle</option>
+					<option value="TRANSIT">Transit</option>
+				</select>
+				<button id="submitButton" class="k-primary submit">Confirm</button>
+			</div>
+		</div>
+		<div class="direction panel" id="direction-panel">
+			<button id="editSearch" class="k-primary edit">Change routes</button>
+			<p>Total km: <span id="total"></span></p>
+		</div>
+		<div id = "places-panel" class="places panel">
+			<label>Choose place:</label>
+			<input type="text" id = "start" class = "textfield"> 
+		</div>
+
+	<div>
+  </body>
+</html>
