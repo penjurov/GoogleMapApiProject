@@ -1,4 +1,4 @@
-define(["jquery", "kendo"], function ($) {
+define(["jquery", "kendo", "handlebars"], function ($) {
     'use strict';
     var UI = (function() {
         var $p = $("p").height(25+'px').width(75+'%')
@@ -30,14 +30,39 @@ define(["jquery", "kendo"], function ($) {
             $('#waypoints').append($currentDiv);
         };
 
-        function removePoint(selector) {
+        UI.prototype.convertToKendo = function() {
+            $("#editSearch").kendoButton();
+            $("#submitButton").kendoButton();
+            $("#addButton").kendoButton();
+            $("#findButton").kendoButton();
+
+            $("#start").kendoMaskedTextBox();
+            $("#waypoint").kendoMaskedTextBox();
+            $("#end").kendoMaskedTextBox();
+            $("#newLocation").kendoMaskedTextBox();
+            $("#locationDistance").kendoMaskedTextBox();
+
+            $("#mode").kendoComboBox();
+      };
+
+        var removePoint = function(selector) {
             var height = $('.destinations').height() - 25,
                 currentPoint = selector.parent().find($('.wayPointName')).text();
 
             map.removePoint(currentPoint);
             selector.parent().remove();
             $('.destinations').height(height+'px');
-        }
+        };
+
+        UI.prototype.addPlaces = function(items) {
+            var placesTemplate = Handlebars.compile($('#places-template').html());
+
+            $('#places-container').html(placesTemplate({
+                places : items
+            }));
+
+            $("#places-container").kendoMultiSelect().data("kendoMultiSelect");
+        };
 
         return UI;
     })();

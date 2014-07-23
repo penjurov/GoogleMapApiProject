@@ -16,29 +16,45 @@ define(["jquery", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&librari
 		}
 
 		Map.prototype.initialize = function() {
+			initializeMap();
+			initializeSearchFields();
+			initializeDirections();
+
+			if (used) {
+				calcRoute();
+			}
+		};
+
+		var initializeMap = function() {
 			var center = new google.maps.LatLng(CENTER_LATITUDE, CENTER_LONGITUDE),
 				mapOptions = {
 					zoom: 7,
 					center: center
-				},
-				start = (document.getElementById('start')),
-				end = (document.getElementById('end')),
-				waypoints = (document.getElementById('waypoint'));
+				};
 
 			directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
 			map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+		};
 
-			var autocompleteStart = new google.maps.places.Autocomplete(start),
-				autocompleteStop = new google.maps.places.Autocomplete(end),
-				autocompleteWaypoints = new google.maps.places.Autocomplete(waypoints);
+		var initializeSearchFields = function() {
+			var searchFields = [];
 
-			autocompleteStart.bindTo('bounds', map);
-			autocompleteStart.setTypes([]);
-			autocompleteStop.bindTo('bounds', map);
-			autocompleteStop.setTypes([]);
-			autocompleteWaypoints.bindTo('bounds', map);
-			autocompleteWaypoints.setTypes([]);
+			addFields(searchFields, ['start', 'end', 'waypoint', 'newLocation']);
 
+			for (var i = 0, len = searchFields.length; i < len; i++) {
+				searchFields[i].bindTo('bounds', map);
+				searchFields[i].setTypes([]);
+			}
+		};
+
+		var addFields = function(searchFields, fields) {
+			for (var i = 0, len = fields.length; i < len; i++) {
+				var currentField = document.getElementById(fields[i]);
+				searchFields.push(new google.maps.places.Autocomplete(currentField));
+			}
+		};
+
+		var initializeDirections = function() {
 			directionsDisplay.setMap(map);
 			directionsDisplay.setPanel(document.getElementById('direction-panel'));
 
@@ -46,10 +62,6 @@ define(["jquery", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&librari
 				function() {
 					computeTotalDistance(directionsDisplay.getDirections());
 				});
-
-			if (used) {
-				calcRoute();
-			}
 		};
 
 		Map.prototype.calcRoute = function() {
@@ -100,13 +112,41 @@ define(["jquery", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&librari
 		Map.prototype.getCurrentLocation = function() {
 			if (navigator.geolocation) {
 				navigator.geolocation.getCurrentPosition(function (position) {
-					initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+					var initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 					map.setCenter(initialLocation);
+					map.setZoom(17);
 				});
 			}
 		};
 
-		function computeTotalDistance(result) {
+		Map.prototype.getPlaces = function(radius, types) {
+			var service = new google.maps.places.PlacesService(map),
+				request = {
+					location : map.center,
+					radius : radius,
+					types : types
+				};
+
+			service.nearbySearch(request, function(places) {
+				var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+				places.forEach(function (place) {
+					var icon = {
+						url : place.icon || iconBase,
+						scaledSize : new google.maps.Size(24, 24)
+					};
+
+					var marker = new google.maps.Marker({
+						map: map,
+						position: place.geometry.location,
+						title: place.name,
+						size: new google.maps.Size(20, 20),
+						icon: icon
+					});
+				});
+			});
+		};
+
+		var computeTotalDistance = function(result) {
 			var total = 0,
 				myroute = result.routes[0];
 
@@ -116,7 +156,7 @@ define(["jquery", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&librari
 
 			total = total / 1000.0;
 			document.getElementById('total').innerHTML = total + ' km';
-		}
+		};
 
 		return Map;
 	})();

@@ -9,7 +9,8 @@
 			async: 'libs/async',
 			map: "map/map",
 			events : "map/events",
-			ui: "map/ui"
+			ui: "map/ui",
+			places : "map/places"
 		},
 		shim: {
         "jquery.bootstrap": {
@@ -18,9 +19,12 @@
     }
 	});
 
-	require(["map", "ui", "events", , "jquery", "bootstrap"], function (Map, UI) {
+	require(["map", "ui", "places", "events", "jquery", "bootstrap"], function (Map, UI, places) {
 		map = new Map();
-		ui = new UI();
 		map.initialize();
+
+		ui = new UI();
+		ui.addPlaces(places);
+		ui.convertToKendo();
 	});
 }());

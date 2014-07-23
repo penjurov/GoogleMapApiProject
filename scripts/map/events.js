@@ -1,6 +1,9 @@
 define(["jquery", "ui"], function ($) {
 	'use strict';
+
 	$('#submitButton').click(function() {
+		$('#destinations-panel').hide();
+		$('#direction-panel').show();
 		map.calcRoute();
 	});
 
@@ -8,7 +11,7 @@ define(["jquery", "ui"], function ($) {
 		var point = $('#waypoint').val(),
 			numberOfPoints = map.points().length;
 			
-		if (numberOfPoints < 8 && itemDontExist(point)) {
+		if (numberOfPoints < 8 && !itemExists(point)) {
 			$('#waypoint').val('');
 			map.addPoint(point);
 			ui.addPoint(point);
@@ -20,27 +23,11 @@ define(["jquery", "ui"], function ($) {
 		$('#destinations-panel').show();
 	});
 
-	$(document).ready(function() {
-        $("#editSearch").kendoButton();
-        $("#submitButton").kendoButton();
-        $("#addButton").kendoButton();
-        $("#start").kendoMaskedTextBox();
-        $("#waypoint").kendoMaskedTextBox();
-        $("#end").kendoMaskedTextBox();
-        $("#mode").kendoComboBox();
+	$('#findButton').click(function() {
+		var radius = $('#locationDistance').val() || 1000;
 
-        $('#direction-panel').hide();
-        $('#places-panel').hide();
-
-		$('#submitButton').click(function() {
-			$('#destinations-panel').hide();
-			$('#direction-panel').show();
-			map.calcRoute();
-		});
-	});
-
-	$( window ).resize(function() {
-		map.initialize();
+		var types = $("#places-container").data("kendoMultiSelect");
+		map.getPlaces(radius, types.value());
 	});
 
 	$('#destinationsLink').bind('click', function() {
@@ -61,17 +48,26 @@ define(["jquery", "ui"], function ($) {
 		map.getCurrentLocation();
 	});
 
-	function itemDontExist(point) {
-		if ($('.wayPointName:contains("'+ point +'")').length > 0) {
-			return false;
+	$(document).ready(function() {
+		$('#direction-panel').hide();
+		$('#places-panel').hide();
+
+		var interval = setInterval(function(){
+			map.initialize();
+			clearInterval(interval);
+		},100);
+	});
+
+	var itemExists = function(point) {
+		if ($('.wayPointName:contains("'+ point +'")').length > 0 || point.length === 0) {
+			return true;
 		}
 
-		return true;
-	}
+		return false;
+	};
 
-	function changeActive(element) {
+	var changeActive = function(element) {
 		$('.active').removeClass('active');
 		element.addClass('active');
-	}
-
+	};
 });
