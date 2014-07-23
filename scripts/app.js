@@ -7,16 +7,19 @@
 			handlebars: "libs/handlebars",
 			underscore: "libs/underscore",
 			async: 'libs/async',
-			starrating: 'libs/star-rating',
+			"starrating": 'libs/star-rating',
 			map: "map/map",
 			events : "map/events",
 			ui: "map/ui",
 			places : "map/places"
 		},
 		shim: {
-        "jquery.bootstrap": {
-            deps: ["jquery"]
-        }
+			"bootstrap": {
+				deps: ["jquery"]
+			},
+			"starrating": {
+				deps: ["jquery"]
+			}
     }
 	});
 
