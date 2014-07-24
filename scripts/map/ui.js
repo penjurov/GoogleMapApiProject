@@ -1,16 +1,14 @@
-define(["jquery", "kendo", "places", "handlebars"], function ($, places) {
+define(["jquery", "map", "places", "kendo", "handlebars"], function ($, map, places) {
 	'use strict';
-	var $p = $("p").height(25+'px').width(75+'%')
-			.addClass('wayPointName'),
+	var $p = $("p").width(70+'%').addClass('wayPointName'),
 		$button = $('<button/>',
 			{
 				text: 'X'
 			})
 			.addClass('closeButton')
 			.addClass('k-primary')
-			.height('29px')
-			.width('29px'),
-		$div =  $("<div>").height('33px');
+			.height('29px'),
+		$div =  $("<div>");
 
 	var initialize = function() {
 		addPlaces(places);
@@ -47,6 +45,7 @@ define(["jquery", "kendo", "places", "handlebars"], function ($, places) {
 			$currentP = $p.clone()
 				.text(location),
 			$currentButton = $button.clone()
+				.attr('id', 'testButton')
 				.click(function() {
 					removePoint($(this));
 				})
@@ -68,7 +67,7 @@ define(["jquery", "kendo", "places", "handlebars"], function ($, places) {
 
 	var addTopFive = function(items) {
 		$('#topFive-container').text('');
-		if (items.length >0 ) {
+		if (items.length > 0) {
 			handleBarConvert($('#topFive-template'), $('#topFive-container'), items);
 		}
 	};

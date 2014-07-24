@@ -8,7 +8,7 @@
 			underscore: "libs/underscore",
 			async: 'libs/async',
 			"starrating": 'libs/star-rating',
-			map: "map/map",
+			"map": "map/map",
 			events : "map/events",
 			ui: "map/ui",
 			places : "map/places"
@@ -23,7 +23,7 @@
     }
 	});
 
-	require(["map", "ui", "events", "jquery", "bootstrap", "starrating"], function (map, ui) {
+	require(["map", "ui", "events", "bootstrap", "starrating"], function (map, ui) {
 		map.initialize();
 		ui.initialize();
 	});

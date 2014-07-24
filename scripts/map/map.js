@@ -1,4 +1,4 @@
-define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places", "underscore", "starrating"], function ($, ui) {
+define(["jquery", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places", "underscore", "starrating"], function ($) {
 	'use strict';
 	var CENTER_LATITUDE = 42.52,
 		CENTER_LONGITUDE = 25.19,
@@ -9,16 +9,13 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 		rendererOptions = {
 			draggable: true
 		},
-		waypts = [];
+		waypts = [],
+		topFivePlaces = [];
 
 	var initialize = function() {
 		initializeMap();
 		initializeSearchFields();
 		initializeDirections();
-
-		if (used) {
-			calcRoute();
-		}
 	};
 
 	var initializeMap = function() {
@@ -68,7 +65,7 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 		var request = {
 			origin: start,
 			destination: end,
-			waypoints: this.waypts,
+			waypoints: waypts,
 			optimizeWaypoints: true,
 			travelMode: google.maps.TravelMode[selectedMode]
 		};
@@ -83,26 +80,26 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 	};
 
 	var getPoints = function(location) {
-		var points = this.waypts;
+		var points = waypts;
 		return points;
 	};
 
 	var addPoint = function(point) {
-		this.waypts.push({
+		waypts.push({
 			location: point,
 			stopover: true
 		});
 	};
 
 	var removePoint = function(point) {
-		var waypoints = this.waypts;
+		var waypoints = waypts;
 
 		waypoints = waypoints
            .filter(function (el) {
                     return el.location !== point;
                    });
 
-        this.waypts =  waypoints;
+        waypts = waypoints;
 	};
 
 	var getCurrentLocation = function() {
@@ -128,7 +125,7 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 		});
 	};
 
-	var getPlaces = function(radius, types) {
+	var showPlaces = function(radius, types) {
 		var service = new google.maps.places.PlacesService(map),
 			request = {
 				location : map.center,
@@ -136,28 +133,46 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 				types : types
 			};
 
-		service.nearbySearch(request, function(places) {
-			var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
-			console.log(places);
-			places.forEach(function (place) {
-				var icon = {
-						url : place.icon || iconBase,
-						scaledSize : new google.maps.Size(24, 24)
-					},
-					marker = new google.maps.Marker({
-						map: map,
-						position: place.geometry.location,
-						title: place.name,
-						icon: icon
-					});
+		service.nearbySearch(request, callback);
+	};
 
-				google.maps.event.addListener(marker, 'click', function() {
-					createInfoWindow(place, marker);
+	function callback(places) {
+		var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+		places.forEach(function (place) {
+			var icon = {
+					url : place.icon || iconBase,
+					scaledSize : new google.maps.Size(24, 24)
+				},
+				marker = new google.maps.Marker({
+					map: map,
+					position: place.geometry.location,
+					title: place.name,
+					icon: icon
 				});
-			});
 
-			getTopFive(places);
+			google.maps.event.addListener(marker, 'click', function() {
+				createInfoWindow(place, marker);
+			});
 		});
+
+		getTopFive(places);
+	}
+
+	var getTopFive = function(places) {
+		var topFive = _.chain(places)
+			.filter(function(place){
+				if (place.rating) {
+					return true;
+				}
+
+				return false;
+			})
+			.sortBy(function(place) {
+				return place.rating * -1;
+			})
+			.value();
+
+		require("ui").addTopFive(topFive.slice(0, 5));
 	};
 
 	var createInfoWindow = function(place, marker){
@@ -195,23 +210,6 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 		});
 	};
 
-	var getTopFive = function(places) {
-		var topFive = _.chain(places)
-			.filter(function(place){
-				if (place.rating) {
-					return true;
-				}
-
-				return false;
-			})
-			.sortBy(function(place) {
-				return place.rating * -1;
-			})
-			.value();
-
-		ui.addTopFive(topFive.slice(0, 5));
-	};
-
 	var computeTotalDistance = function(result) {
 		var total = 0,
 			myroute = result.routes[0];
@@ -233,6 +231,7 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 		removePoint: removePoint,
 		getCurrentLocation: getCurrentLocation,
 		setLocation: setLocation,
-		getPlaces: getPlaces
+		showPlaces: showPlaces,
+		getTopFive: getTopFive
 	};
 });

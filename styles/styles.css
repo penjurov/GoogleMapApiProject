@@ -18,8 +18,8 @@ html, body, p {
 	height: 100%;
 }
 
-.destinations div, .direction p, .places div{
-	margin-left: 10px;
+.destinations label, .destinations .combobox, .destinations .textfield, .direction p, .places div{
+	margin-left: 5%;
 }
 
 .mainContainer .destinations {
@@ -29,45 +29,59 @@ html, body, p {
 }
 
 .destinations .textfield, .places .textfield {
+	display : block;
+	float : left;
 	width : 90%;
 	margin-bottom: 5px;
 	border-radius: 5px;
 }
 
-.destinations .shortField {
-	width : 79%;
+.destinations .shortfield {
+	display : block;
+	float : left;
+	width : 76%;
 	margin-bottom: 5px;
+	border-radius: 5px;
+	margin-left: 5%;
 }
 
 .destinations .combobox, .places .combobox {
 	width : 58%;
 	margin-right: 1%;
+	float : left;
 }
 
-.destinations label, .places label{
-	display :block;
+.destinations label, .places label {
+	display : block;
+	float : left;
+	width:100%;
 }
 
 .destinations .addButton {
-	width : 10%;
+	float : left;
+	width : 12%;
 	margin-bottom: 5px;
+	margin-left: 2%;
 }
 
 .destinations .normalButton {
 	width : 30%;
-	float : right;
-	margin-right: 28px;
+	float : left;
+	margin-left: 1%;
+	display : block;
 }
 
 .destinations .closeButton {
-	float : right;
-	margin-right: 28px;
-	padding: 0;
+	float : left;
+	width : 12%;
+	margin-bottom: 5px;
+	margin-left: 8%;
 }
 
 .destinations .wayPointName {
-	display :inline-block;
+	float : left;
 	margin-top: 5px;
+	margin-left: 5%;
 }
 
 .mainContainer .direction {	
@@ -89,6 +103,8 @@ html, body, p {
 }
 
 .places .listBox {
+	float : left;
+	display : block;
 	width : 90%;
 	margin-bottom: 5px;
 	margin-left: 0;
@@ -96,8 +112,8 @@ html, body, p {
 
 .places .normalButton {
 	width : 30%;
-	display : inline-block;
-	margin-left: 178px;
+	float : left;
+	margin-left: 60%;
 }
 
 
