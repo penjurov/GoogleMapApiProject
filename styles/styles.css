@@ -54,7 +54,7 @@ html, body, p {
 .destinations label, .places label {
 	display : block;
 	float : left;
-	width:100%;
+	width:95%;
 }
 
 .destinations .addButton {
