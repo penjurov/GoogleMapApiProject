@@ -1,83 +1,89 @@
-define(["jquery", "kendo", "handlebars"], function ($) {
-    'use strict';
-    var UI = (function() {
-        var $p = $("p").height(25+'px').width(75+'%')
-                .addClass('wayPointName'),
-            $button = $('<button/>',
-                {
-                    text: 'X'
-                })
-                .addClass('closeButton')
-                .addClass('k-primary')
-                .height('29px')
-                .width('29px'),
-            $div =  $("<div>").height('33px');
+define(["jquery", "kendo", "places", "handlebars"], function ($, places) {
+	'use strict';
+	var $p = $("p").height(25+'px').width(75+'%')
+			.addClass('wayPointName'),
+		$button = $('<button/>',
+			{
+				text: 'X'
+			})
+			.addClass('closeButton')
+			.addClass('k-primary')
+			.height('29px')
+			.width('29px'),
+		$div =  $("<div>").height('33px');
 
-        function UI() {}
+	var initialize = function() {
+		addPlaces(places);
+		convertToKendo();
+		$('.destinations').show();
+	};
 
-        UI.prototype.addPoint = function(location) {
-            var $currentDiv = $div.clone(),
-                $currentP = $p.clone()
-                    .text(location),
-                $currentButton = $button.clone()
-                    .click(function() {
-                        removePoint($(this));
-                    })
-                    .kendoButton();
+	var addPlaces = function(items) {
+		handleBarConvert($('#places-template'), $('#places-container'), items);
 
-            $currentDiv.append($currentP);
-            $currentDiv.append($currentButton);
-            $('#waypoints').append($currentDiv);
-        };
+		$("#places-container").kendoMultiSelect().data("kendoMultiSelect");
+	};
 
-        UI.prototype.convertToKendo = function() {
-            $("#editSearch").kendoButton();
-            $("#calcRoute").kendoButton();
-            $("#addWayPoint").kendoButton();
-            $("#findButton").kendoButton();
-            $("#setLocation").kendoButton();
+	var convertToKendo = function() {
+		$(document).ready(function(){
+			$("#editSearch").kendoButton();
+			$("#calcRoute").kendoButton();
+			$("#addWayPoint").kendoButton();
+			$("#findButton").kendoButton();
+			$("#setLocation").kendoButton();
 
-            $("#start").kendoMaskedTextBox();
-            $("#waypoint").kendoMaskedTextBox();
-            $("#end").kendoMaskedTextBox();
-            $("#newLocation").kendoMaskedTextBox();
-            $("#locationDistance").kendoMaskedTextBox();
+			$("#start").kendoMaskedTextBox();
+			$("#waypoint").kendoMaskedTextBox();
+			$("#end").kendoMaskedTextBox();
+			$("#newLocation").kendoMaskedTextBox();
+			$("#locationDistance").kendoMaskedTextBox();
 
-            $("#mode").kendoComboBox();
-        };
+			$("#mode").kendoComboBox();
+		});
+	};
 
-        var removePoint = function(selector) {
-            var height = $('.destinations').height() - 25,
-                currentPoint = selector.parent().find($('.wayPointName')).text();
+	var addPoint = function(location) {
+		var $currentDiv = $div.clone(),
+			$currentP = $p.clone()
+				.text(location),
+			$currentButton = $button.clone()
+				.click(function() {
+					removePoint($(this));
+				})
+				.kendoButton();
 
-            map.removePoint(currentPoint);
-            selector.parent().remove();
-            $('.destinations').height(height+'px');
-        };
+		$currentDiv.append($currentP);
+		$currentDiv.append($currentButton);
+		$('#waypoints').append($currentDiv);
+	};
 
-        UI.prototype.addPlaces = function(items) {
-            handleBarConvert($('#places-template'), $('#places-container'), items);
+	var removePoint = function(selector) {
+		var height = $('.destinations').height() - 25,
+			currentPoint = selector.parent().find($('.wayPointName')).text();
 
-            $("#places-container").kendoMultiSelect().data("kendoMultiSelect");
-        };
+		map.removePoint(currentPoint);
+		selector.parent().remove();
+		$('.destinations').height(height+'px');
+	};
 
-        UI.prototype.addTopFive = function(items) {
-            $('#topFive-container').text('');
-            if (items.length >0 ) {
-               handleBarConvert($('#topFive-template'), $('#topFive-container'), items);
-            }
-        };
+	var addTopFive = function(items) {
+		$('#topFive-container').text('');
+		if (items.length >0 ) {
+			handleBarConvert($('#topFive-template'), $('#topFive-container'), items);
+		}
+	};
 
-        function handleBarConvert(template, container, items) {
-            var currentTemplate = Handlebars.compile(template.html());
+	function handleBarConvert(template, container, items) {
+		var currentTemplate = Handlebars.compile(template.html());
 
-            container.html(currentTemplate({
-                places : items
-            }));
-        }
+		container.html(currentTemplate({
+			places : items
+		}));
+	}
 
-        return UI;
-    })();
-
-    return UI;
+	return {
+		initialize: initialize,
+		addPoint: addPoint,
+		addTopFive: addTopFive
+	};
 });

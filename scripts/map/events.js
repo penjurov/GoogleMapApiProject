@@ -1,4 +1,4 @@
-define(["jquery", "ui"], function ($) {
+define(["jquery", "ui", "map"], function ($, ui, map) {
 	'use strict';
 
 	$('#calcRoute').click(function() {
@@ -55,10 +55,6 @@ define(["jquery", "ui"], function ($) {
 	});
 
 	$(document).ready(function() {
-		$('#direction-panel').hide();
-		$('#places-panel').hide();
-
-		
 		var interval = setInterval(function(){
 			map.initialize();
 			clearInterval(interval);

@@ -23,12 +23,8 @@
     }
 	});
 
-	require(["map", "ui", "places", "events", "jquery", "bootstrap", "starrating"], function (Map, UI, places) {
-		map = new Map();
+	require(["map", "ui", "events", "jquery", "bootstrap", "starrating"], function (map, ui) {
 		map.initialize();
-
-		ui = new UI();
-		ui.addPlaces(places);
-		ui.convertToKendo();
+		ui.initialize();
 	});
 }());

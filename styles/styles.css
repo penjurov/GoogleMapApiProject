@@ -24,7 +24,8 @@ html, body, p {
 
 .mainContainer .destinations {
 	height: 96%;
-	width:30%;	
+	width:30%;
+	display : none;	
 }
 
 .destinations .textfield, .places .textfield {
@@ -73,6 +74,7 @@ html, body, p {
 	height: 96%;
 	width: 30%;
 	overflow-y: scroll;
+	display : none;
 }
 
 .direction .edit {
@@ -83,6 +85,7 @@ html, body, p {
 .mainContainer .places {
 	height: 96%;
 	width:30%;
+	display : none;
 }
 
 .places .listBox {
