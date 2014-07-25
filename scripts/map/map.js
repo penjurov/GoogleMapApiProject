@@ -1,4 +1,5 @@
-define(["jquery", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places", "underscore", "starrating"], function ($) {
+define(["jquery", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places",
+		"underscore", "starrating"], function ($) {
 	'use strict';
 	var CENTER_LATITUDE = 42.52,
 		CENTER_LONGITUDE = 25.19,
@@ -10,7 +11,7 @@ define(["jquery", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&librari
 			draggable: true
 		},
 		waypts = [],
-		topFivePlaces = [];
+		mapPlaces = [];
 
 	var initialize = function() {
 		initializeMap();
@@ -133,33 +134,38 @@ define(["jquery", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&librari
 				types : types
 			};
 
-		service.nearbySearch(request, callback);
+		var deferred = $.Deferred();
+
+		deferred.done(service.nearbySearch(request, callback));
+		
+		function callback(places) {
+			var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+
+			places.forEach(function (place) {
+				var icon = {
+						url : place.icon || iconBase,
+						scaledSize : new google.maps.Size(24, 24)
+					},
+					marker = new google.maps.Marker({
+						map: map,
+						position: place.geometry.location,
+						title: place.name,
+						icon: icon
+					});
+
+				google.maps.event.addListener(marker, 'click', function() {
+					createInfoWindow(place, marker);
+				});
+			});
+
+			mapPlaces = places;
+		}
+
+		return deferred.promise();
 	};
 
-	function callback(places) {
-		var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
-		places.forEach(function (place) {
-			var icon = {
-					url : place.icon || iconBase,
-					scaledSize : new google.maps.Size(24, 24)
-				},
-				marker = new google.maps.Marker({
-					map: map,
-					position: place.geometry.location,
-					title: place.name,
-					icon: icon
-				});
-
-			google.maps.event.addListener(marker, 'click', function() {
-				createInfoWindow(place, marker);
-			});
-		});
-
-		getTopFive(places);
-	}
-
-	var getTopFive = function(places) {
-		var topFive = _.chain(places)
+	var getTopFive = function() {
+		var topFive = _.chain(mapPlaces)
 			.filter(function(place){
 				if (place.rating) {
 					return true;

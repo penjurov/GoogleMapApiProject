@@ -74,7 +74,8 @@ define(["jquery", "ui", "map"], function ($, ui, map) {
 		var radius = $('#locationDistance').val() || 1000,
 			types = $("#places-container").data("kendoMultiSelect");
 
-		map.showPlaces(radius, types.value());
+		map.showPlaces(radius, types.value()).then(map.getTopFive());
+		
 	});
 
 	var changeActive = function(element) {
