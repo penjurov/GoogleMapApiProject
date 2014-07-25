@@ -27,14 +27,14 @@
 	    </div>
 	    <div class="collapse navbar-collapse">
 	      <ul class="nav navbar-nav">
-	        <li class="active" id = "destinationsLink" ><a href="#">Destinations</a></li>
-	        <li id="placesLink"><a href="#">Search places</a></li>
+	        <li class="active" id = "destinationsLink" ><a href="#Destinations">Destinations</a></li>
+	        <li id="placesLink"><a href="#Places">Search places</a></li>
 	      </ul>
 	    </div>
 	  </div>
 	</div>	
-	<div id="container" class = "mainContainer">
-		<div id="map-canvas" class = "map-canvas"></div>
+	<div id="map-canvas" class = "map-canvas" display = "none"></div>
+	<div id="app" class = "mainContainer">				
 		<div id = "destinations-panel" class="destinations panel">
 	    	<div>
 				<label>Starting:</label>
@@ -70,7 +70,7 @@
 				<input type="text" id = "locationDistance" class = "textfield">
 				<button id="findButton" class="k-primary normalButton">Find</button>
 			</div>
-			<div id="topFive-container"></div>
+			<div id="topFive-container" class = "topFive-container"></div>
 		</div>
 	</div>
 	<script id="places-template" type="text/x-handlebars-template">
@@ -83,18 +83,18 @@
         </select>
     </script>
 	<script id="topFive-template" type="text/x-handlebars-template">
-        <div class = "topFive-list"> 
-        	<h4> Top by rating </h4>     
-            {{#each places}}
-            <div> 
-            	<strong> {{name}} </strong>
-            	</br>
-            	<em> {{vicinity}} </em>
-            	</br>
-            	<em> rating : {{rating}} </em>
-            </div>
-            {{/each}}           
+    	<h4> Top by rating </h4>     
+        {{#each places}}
+        <div class = "topFive-element"> 
+        	<strong> {{name}} </strong>
+        	</br>
+        	<em> {{vicinity}} </em>
+        	</br>
+        	<em> rating : {{rating}} </em>
+        	<p class = "latitude"> {{geometry.location.k}}</p>
+        	<p class = "longitude"> {{geometry.location.B}}</p>
         </div>
+        {{/each}}           
     </script>
   </body>
 </html>

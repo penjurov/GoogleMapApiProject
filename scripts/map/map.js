@@ -1,5 +1,5 @@
-define(["jquery", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places",
-		"underscore", "starrating"], function ($) {
+define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places",
+		"underscore", "starrating", "kendo"], function ($, ui) {
 	'use strict';
 	var CENTER_LATITUDE = 42.52,
 		CENTER_LONGITUDE = 25.19,
@@ -11,7 +11,9 @@ define(["jquery", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&librari
 			draggable: true
 		},
 		waypts = [],
-		mapPlaces = [];
+		mapPlaces = [],
+		currentLocation,
+		infowindow;
 
 	var initialize = function() {
 		initializeMap();
@@ -58,10 +60,10 @@ define(["jquery", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&librari
 			});
 	};
 
-	var calcRoute = function() {
-		var start = document.getElementById('start').value,
-			end = document.getElementById('end').value,
-			selectedMode = document.getElementById('mode').value;
+	var calcRoute = function(start, end, selectedMode, latitude, longitude) {
+		if (end==='') {
+			end = new google.maps.LatLng(latitude, longitude);
+		}
 
 		var request = {
 			origin: start,
@@ -78,6 +80,7 @@ define(["jquery", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&librari
 		});
 
 		used = true;
+		infowindow.close();
 	};
 
 	var getPoints = function(location) {
@@ -106,8 +109,8 @@ define(["jquery", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&librari
 	var getCurrentLocation = function() {
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(function (position) {
-				var initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-				map.setCenter(initialLocation);
+				currentLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+				map.setCenter(currentLocation);
 				map.setZoom(17);
 			});
 		}
@@ -120,10 +123,16 @@ define(["jquery", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&librari
 			if (status == google.maps.GeocoderStatus.OK) {
 				var center = results[0].geometry.location;
 				map.setCenter(center);
+				currentLocation = center;
 			} else {
 				alert("Geocode was not successful for the following reason: " + status);
 			}
 		});
+	};
+
+	var setCenter = function(latitude, longitude) {
+		var center = new google.maps.LatLng(latitude, longitude);
+		map.setCenter(center);
 	};
 
 	var showPlaces = function(radius, types) {
@@ -134,13 +143,10 @@ define(["jquery", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&librari
 				types : types
 			};
 
-		var deferred = $.Deferred();
+		service.nearbySearch(request, callback);
 
-		deferred.done(service.nearbySearch(request, callback));
-		
 		function callback(places) {
 			var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
-
 			places.forEach(function (place) {
 				var icon = {
 						url : place.icon || iconBase,
@@ -158,14 +164,12 @@ define(["jquery", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&librari
 				});
 			});
 
-			mapPlaces = places;
+			getTopFive(places);
 		}
-
-		return deferred.promise();
 	};
 
-	var getTopFive = function() {
-		var topFive = _.chain(mapPlaces)
+	var getTopFive = function(places) {
+		var topFive = _.chain(places)
 			.filter(function(place){
 				if (place.rating) {
 					return true;
@@ -178,17 +182,18 @@ define(["jquery", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&librari
 			})
 			.value();
 
-		require("ui").addTopFive(topFive.slice(0, 5));
+		ui.addTopFive(topFive.slice(0, 5));
 	};
 
 	var createInfoWindow = function(place, marker){
 		var content = '',
-			title = "<strong>" + place.name + "</strong> </br>";
-			
+			title = '<strong class="infoName">' + place.name + "</strong> </br>",
+			button = document.createElement("Button");
+		
 		content += title;
 
 		if (place.vicinity) {
-			var address = "<em>" + place.vicinity + "</em> </br>";
+			var address = '<em class = "infoAddress">' + place.vicinity + "</em> </br>";
 			content += address;
 		}
 
@@ -208,12 +213,35 @@ define(["jquery", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&librari
 
 			content += rating;
 		}
-							
-		var	infowindow = new google.maps.InfoWindow({
+
+		styleButton(button);
+		content += '</br>';
+
+		content += button.outerHTML;
+
+		var start = '<p class = "startPoint">' + initialLocation + '</p>';
+		content += start;
+
+		var latitude = '<p class = "endPointLatitude">' + place.geometry.location.k + '</p>';
+		content += latitude;
+
+		var longitude = '<p class = "endPointLongitude">' + place.geometry.location.B + '</p>';
+		content += longitude;
+	
+		infowindow = new google.maps.InfoWindow({
 			map: map,
 			position : marker.position,
 			content : content
 		});
+	};
+
+	var styleButton = function(button) {
+		button.style.background='#98DCF8';
+		button.style.borderRadius='5px';
+		button.style.border='1px solid #98DCF8';
+		button.innerText = "Take me there";
+		button.className = button.className + "takeMeThereButton";
+		button.addEventListener("click");
 	};
 
 	var computeTotalDistance = function(result) {
@@ -237,6 +265,7 @@ define(["jquery", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&librari
 		removePoint: removePoint,
 		getCurrentLocation: getCurrentLocation,
 		setLocation: setLocation,
+		setCenter: setCenter,
 		showPlaces: showPlaces,
 		getTopFive: getTopFive
 	};

@@ -31,6 +31,14 @@ define(["jquery", "ui", "map"], function ($, ui, map) {
 		}
 	});
 
+	// When click on close Button closes the current waypoint and removes it from waypoints array
+	$(document).on("click", ".closeButton", function(){
+		var self = $(this),
+			currentPoint = self.parent().find($('.wayPointName')).text();
+		ui.removePoint(self);
+		map.removePoint(currentPoint);
+	});
+
 	// Check if current waypoint is in the list, or if user input something in new waypoint field
 	var itemExists = function(point) {
 		if ($('.wayPointName:contains("'+ point +'")').length > 0) {
@@ -44,7 +52,12 @@ define(["jquery", "ui", "map"], function ($, ui, map) {
 	$('#calcRoute').click(function() {
 		$('#destinations-panel').hide();
 		$('#direction-panel').show();
-		map.calcRoute();
+
+		var start = $('#start').val(),
+			end = $('#end').val(),
+			selectedMode = $('#mode').val();
+
+		map.calcRoute(start, end, selectedMode);
 	});
 
 	// Change view between route instruction and adding route points
@@ -74,8 +87,24 @@ define(["jquery", "ui", "map"], function ($, ui, map) {
 		var radius = $('#locationDistance').val() || 1000,
 			types = $("#places-container").data("kendoMultiSelect");
 
-		map.showPlaces(radius, types.value()).then(map.getTopFive());
-		
+		map.showPlaces(radius, types.value());
+	});
+
+	// Show selected place on the map
+	$(document).on("click", ".topFive-element", function(){
+		var latitude = $(this).find($('.latitude')).text(),
+			longitude = $(this).find($('.longitude')).text();
+		map.setCenter(latitude, longitude);
+	});
+
+	// Make route from current location to selected place
+	$(document).on("click", ".takeMeThereButton", function() {
+		var start = map.getCurrentLocation(),
+			latitude = $(this).parent().find(".endPointLatitude").text(),
+			longitude = $(this).parent().find(".endPointLongitude").text(),
+			end = '';
+
+		map.calcRoute(start, end, "DRIVING", latitude, longitude);
 	});
 
 	var changeActive = function(element) {

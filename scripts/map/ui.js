@@ -1,14 +1,15 @@
-define(["jquery", "map", "places", "kendo", "handlebars"], function ($, map, places) {
+define(["jquery", "places", "kendo", "handlebars"], function ($, places) {
 	'use strict';
-	var $p = $("p").width(70+'%').addClass('wayPointName'),
-		$button = $('<button/>',
-			{
-				text: 'X'
-			})
-			.addClass('closeButton')
-			.addClass('k-primary')
-			.height('29px'),
-		$div =  $("<div>");
+	var p = document.createElement('p'),
+		button = document.createElement('button'),
+		div =  document.createElement('div');
+
+		p.style.width = '70%';
+		p.className = p.className + "wayPointName ";
+
+		button.className = button.className + "closeButton ";
+		button.className = button.className + "k-primary ";
+		button.style.height = '29px';
 
 	var initialize = function() {
 		addPlaces(places);
@@ -41,26 +42,25 @@ define(["jquery", "map", "places", "kendo", "handlebars"], function ($, map, pla
 	};
 
 	var addPoint = function(location) {
-		var $currentDiv = $div.clone(),
-			$currentP = $p.clone()
-				.text(location),
-			$currentButton = $button.clone()
-				.attr('id', 'testButton')
-				.click(function() {
-					removePoint($(this));
-				})
-				.kendoButton();
+		var currentDiv = div.cloneNode(),
+			currentP = p.cloneNode(),
+			currentButton = button.cloneNode();
 
-		$currentDiv.append($currentP);
-		$currentDiv.append($currentButton);
-		$('#waypoints').append($currentDiv);
+			currentP.innerHTML = location;
+
+			currentButton.addEventListener('click');
+			currentButton.innerHTML = 'X';
+
+		currentDiv.appendChild(currentP);
+		currentDiv.appendChild(currentButton);
+		$('#waypoints').append(currentDiv);
+		$('.closeButton').kendoButton();
 	};
 
 	var removePoint = function(selector) {
 		var height = $('.destinations').height() - 25,
 			currentPoint = selector.parent().find($('.wayPointName')).text();
 
-		map.removePoint(currentPoint);
 		selector.parent().remove();
 		$('.destinations').height(height+'px');
 	};
@@ -83,6 +83,7 @@ define(["jquery", "map", "places", "kendo", "handlebars"], function ($, map, pla
 	return {
 		initialize: initialize,
 		addPoint: addPoint,
-		addTopFive: addTopFive
+		addTopFive: addTopFive,
+		removePoint: removePoint
 	};
 });
