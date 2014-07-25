@@ -94,17 +94,15 @@ define(["jquery", "ui", "map"], function ($, ui, map) {
 	$(document).on("click", ".topFive-element", function(){
 		var latitude = $(this).find($('.latitude')).text(),
 			longitude = $(this).find($('.longitude')).text();
-		map.setCenter(latitude, longitude);
+		map.setLocation('', latitude, longitude);
 	});
 
 	// Make route from current location to selected place
 	$(document).on("click", ".takeMeThereButton", function() {
-		var start = map.getCurrentLocation(),
-			latitude = $(this).parent().find(".endPointLatitude").text(),
-			longitude = $(this).parent().find(".endPointLongitude").text(),
-			end = '';
+		var latitude = $(this).parent().find(".endPointLatitude").text(),
+			longitude = $(this).parent().find(".endPointLongitude").text();
 
-		map.calcRoute(start, end, "DRIVING", latitude, longitude);
+		map.calcRoute('', '', "DRIVING", latitude, longitude);
 	});
 
 	var changeActive = function(element) {

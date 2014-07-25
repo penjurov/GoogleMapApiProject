@@ -15,12 +15,14 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 		currentLocation,
 		infowindow;
 
+	// Initialize map module
 	var initialize = function() {
 		initializeMap();
 		initializeSearchFields();
 		initializeDirections();
 	};
 
+	// Initialize map content
 	var initializeMap = function() {
 		var center = new google.maps.LatLng(CENTER_LATITUDE, CENTER_LONGITUDE),
 			mapOptions = {
@@ -32,6 +34,7 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 		map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 	};
 
+	// Initilize search fields for autocomplete
 	var initializeSearchFields = function() {
 		var searchFields = [];
 
@@ -43,6 +46,7 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 		}
 	};
 
+	// Add autocomplete 
 	var addFields = function(searchFields, fields) {
 		for (var i = 0, len = fields.length; i < len; i++) {
 			var currentField = document.getElementById(fields[i]);
@@ -50,6 +54,7 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 		}
 	};
 
+	// Initialize direction fields
 	var initializeDirections = function() {
 		directionsDisplay.setMap(map);
 		directionsDisplay.setPanel(document.getElementById('direction-panel'));
@@ -60,9 +65,14 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 			});
 	};
 
+	// Calculating routes by start/end string points, or by start point as current location and end LatLng point
 	var calcRoute = function(start, end, selectedMode, latitude, longitude) {
 		if (end==='') {
 			end = new google.maps.LatLng(latitude, longitude);
+		}
+
+		if (start === '') {
+			start = currentLocation;
 		}
 
 		var request = {
@@ -83,11 +93,13 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 		infowindow.close();
 	};
 
+	// Return current way points
 	var getPoints = function(location) {
 		var points = waypts;
 		return points;
 	};
 
+	// Add way point
 	var addPoint = function(point) {
 		waypts.push({
 			location: point,
@@ -95,6 +107,7 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 		});
 	};
 
+	// Remove selected way point
 	var removePoint = function(point) {
 		var waypoints = waypts;
 
@@ -106,6 +119,8 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
         waypts = waypoints;
 	};
 
+
+	// Retrieving current location of the user 
 	var getCurrentLocation = function() {
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(function (position) {
@@ -114,27 +129,32 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 				map.setZoom(17);
 			});
 		}
+
+		return currentLocation;
 	};
 
-	var setLocation = function(location) {
-		var geo = new google.maps.Geocoder();
+	// Seting current center to another point by location string
+	var setLocation = function(location, latitude, longitude) {
+		if (latitude) {
+			var center = new google.maps.LatLng(latitude, longitude);
+			map.setCenter(center);
+		}
+		else {
+			var geo = new google.maps.Geocoder();
 
-		geo.geocode({'address': location},function(results, status){
-			if (status == google.maps.GeocoderStatus.OK) {
-				var center = results[0].geometry.location;
-				map.setCenter(center);
-				currentLocation = center;
-			} else {
-				alert("Geocode was not successful for the following reason: " + status);
-			}
-		});
+			geo.geocode({'address': location},function(results, status){
+				if (status == google.maps.GeocoderStatus.OK) {
+					var center = results[0].geometry.location;
+					map.setCenter(center);
+					currentLocation = center;
+				} else {
+					alert("Geocode was not successful for the following reason: " + status);
+				}
+			});
+		}
 	};
 
-	var setCenter = function(latitude, longitude) {
-		var center = new google.maps.LatLng(latitude, longitude);
-		map.setCenter(center);
-	};
-
+	// Showing markers of selected place types on the map
 	var showPlaces = function(radius, types) {
 		var service = new google.maps.places.PlacesService(map),
 			request = {
@@ -168,6 +188,7 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 		}
 	};
 
+	// Showing top five places by rating
 	var getTopFive = function(places) {
 		var topFive = _.chain(places)
 			.filter(function(place){
@@ -185,6 +206,8 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 		ui.addTopFive(topFive.slice(0, 5));
 	};
 
+	// Creating Info Window with place name, address, photo and rating.
+	// Containing information needed for Take me there button, such as current location and selected place Latitude, Longitude
 	var createInfoWindow = function(place, marker){
 		var content = '',
 			title = '<strong class="infoName">' + place.name + "</strong> </br>",
@@ -219,7 +242,7 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 
 		content += button.outerHTML;
 
-		var start = '<p class = "startPoint">' + initialLocation + '</p>';
+		var start = '<p class = "startPoint">' + currentLocation + '</p>';
 		content += start;
 
 		var latitude = '<p class = "endPointLatitude">' + place.geometry.location.k + '</p>';
@@ -235,6 +258,7 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 		});
 	};
 
+	// Styling button
 	var styleButton = function(button) {
 		button.style.background='#98DCF8';
 		button.style.borderRadius='5px';
@@ -244,6 +268,7 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 		button.addEventListener("click");
 	};
 
+	// Calculating total Distance
 	var computeTotalDistance = function(result) {
 		var total = 0,
 			myroute = result.routes[0];
@@ -256,7 +281,6 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 		document.getElementById('total').innerHTML = total + ' km';
 	};
 
-
 	return {
 		initialize: initialize,
 		calcRoute: calcRoute,
@@ -265,7 +289,6 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 		removePoint: removePoint,
 		getCurrentLocation: getCurrentLocation,
 		setLocation: setLocation,
-		setCenter: setCenter,
 		showPlaces: showPlaces,
 		getTopFive: getTopFive
 	};
