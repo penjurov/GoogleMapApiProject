@@ -143,9 +143,13 @@ html, body {
 	cursor: pointer; 
 }
 
-.mainContainer .startPoint, .endPointLatitude, .endPointLongitude {
+.startPoint, .endPointLatitude, .endPointLongitude {
 	display : none;
 	height: 0;
+}
+
+.takeMeThereButton {
+	margin-top : 5px;
 }
 
 .map-canvas {

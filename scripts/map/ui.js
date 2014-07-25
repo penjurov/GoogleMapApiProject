@@ -62,6 +62,11 @@ define(["jquery", "places", "kendo", "handlebars"], function ($, places) {
 		$('#destinations-panel').hide();
 		$('#direction-panel').hide();
 		$('#places-panel').show();
+
+		var multiSelect = $('#places-container').data("kendoMultiSelect");
+		multiSelect.value([]);
+
+		$('#topFive-container').html('');
 	};
 
 	// Adding Way Point elements in the DOM

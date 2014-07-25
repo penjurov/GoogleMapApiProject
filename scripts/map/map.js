@@ -11,7 +11,7 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 			draggable: true
 		},
 		waypts = [],
-		mapPlaces = [],
+		markersArray = [],
 		currentLocation,
 		infowindow;
 
@@ -125,6 +125,7 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 
 	// Retrieving current location of the user 
 	var getCurrentLocation = function() {
+		clearOverlays();
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(function (position) {
 				currentLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
@@ -166,6 +167,7 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 				types : types
 			};
 
+		clearOverlays();
 		service.nearbySearch(request, callback);
 
 		function callback(places) {
@@ -182,6 +184,8 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 						icon: icon
 					});
 
+				markersArray.push(marker);
+
 				google.maps.event.addListener(marker, 'click', function() {
 					createInfoWindow(place, marker);
 				});
@@ -190,6 +194,15 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 			getTopFive(places);
 		}
 	};
+
+	// Clear all markers;
+	function clearOverlays() {
+		for (var i = 0; i < markersArray.length; i++ ) {
+			markersArray[i].setMap(null);
+		}
+
+		markersArray.length = 0;
+	}
 
 	// Showing top five places by rating
 	var getTopFive = function(places) {
@@ -225,12 +238,19 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 
 		if (place.photos) {
 			var photo = place.photos[0],
-				photoUrl = photo.getUrl({
-				maxWidth: photo.height,
-				maxHeight: photo.width
-			});
+					photoUrl = photo.getUrl({
+					maxWidth: photo.height,
+					maxHeight: photo.width
+				}),
+				photoHeight = photo.height,
+				photoWidth = photo.width;
 
-			content += '<img src=' + photoUrl + ' width = "' + photo.width/2 + ' px" height ="' + photo.height/2 + 'px"> </br>';
+			while(photoHeight > 280 || photoWidth > 250) {
+				photoHeight = photoHeight * 0.9;
+				photoWidth = photoWidth * 0.9;
+			}
+
+			content += '<img src=' + photoUrl + ' width = "' + photoWidth + ' px" height ="' + photoHeight + 'px"> </br>';
 		}
 
 		if (place.rating) {
@@ -239,9 +259,11 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 
 			content += rating;
 		}
+		else {
+			content += '<div height = "10px"> </div>';
+		}
 
 		styleButton(button);
-		content += '</br>';
 
 		content += button.outerHTML;
 
