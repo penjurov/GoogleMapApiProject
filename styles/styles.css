@@ -26,10 +26,10 @@ html, body {
 .mainContainer .destinations {
 	height: 96%;
 	width:30%;
-
+	display : none;
 }
 
-.destinations .textfield, .places .textfield {
+.mainContainer .destinations .textfield, .mainContainer .places .textfield {
 	display : block;
 	float : left;
 	width : 90%;
@@ -37,7 +37,7 @@ html, body {
 	border-radius: 5px;
 }
 
-.destinations .shortfield {
+.mainContainer .destinations .shortfield {
 	display : block;
 	float : left;
 	width : 76%;
@@ -46,40 +46,39 @@ html, body {
 	margin-left: 5%;
 }
 
-.destinations .combobox, .places .combobox {
+.mainContainer .destinations .combobox {
 	width : 58%;
-	margin-right: 1%;
 	float : left;
 }
 
-.destinations label, .places label {
+.mainContainer .destinations label, .places label {
 	display : block;
 	float : left;
 	width:95%;
 }
 
-.destinations .addButton {
+.mainContainer .destinations .addButton {
 	float : left;
 	width : 12%;
 	margin-bottom: 5px;
 	margin-left: 2%;
 }
 
-.destinations .normalButton {
+.mainContainer .destinations .normalButton {
 	width : 30%;
 	float : left;
 	margin-left: 1%;
 	display : block;
 }
 
-.destinations .closeButton {
+.mainContainer .destinations .closeButton {
 	float : left;
 	width : 12%;
 	margin-bottom: 5px;
 	margin-left: 8%;
 }
 
-.destinations .wayPointName {
+.mainContainer .destinations .wayPointName {
 	float : left;
 	margin-top: 5px;
 	margin-left: 5%;
@@ -92,14 +91,14 @@ html, body {
 	display : none;
 }
 
-.direction p {
+.mainContainer .direction p {
 	text-align: center;
 	margin-left: 0;
 	margin-top: 10px;
 	padding: 0;
 }
 
-.direction .edit {
+.mainContainer .direction .edit {
 	margin-top: 5px;
 	width : 100%;
 }
@@ -110,7 +109,7 @@ html, body {
 	display : none;
 }
 
-.places .listBox {
+.mainContainer .places .listBox {
 	float : left;
 	display : block;
 	width : 90%;
@@ -118,33 +117,33 @@ html, body {
 	margin-left: 0;
 }
 
-.places .normalButton {
+.mainContainer .places .normalButton {
 	width : 30%;
 	float : left;
 	margin-left: 60%;
 }
 
-.places .topFive-container {
+.mainContainer .places .topFive-container {
 	float : left;
 	width : 90%;
 }
 
-.places .topFive-element p {
+.mainContainer .places .topFive-element p {
 	display : none;
 }
 
-.places .topFive-element {
+.mainContainer .places .topFive-element {
 	width : 85%;	
 }
 
 
-.places .topFive-element:hover {
+.mainContainer .places .topFive-element:hover {
 	float : left;
 	background-color: #98DCF8;
 	cursor: pointer; 
 }
 
-.startPoint, .endPointLatitude, .endPointLongitude {
+.mainContainer .startPoint, .endPointLatitude, .endPointLongitude {
 	display : none;
 	height: 0;
 }

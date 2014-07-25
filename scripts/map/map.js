@@ -1,4 +1,4 @@
-define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places",
+define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&language=en",
 		"underscore", "starrating", "kendo"], function ($, ui) {
 	'use strict';
 	var CENTER_LATITUDE = 42.52,

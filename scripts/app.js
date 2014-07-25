@@ -23,7 +23,7 @@
     }
 	});
 
-	require(["map", "ui", "events", "bootstrap", "starrating"], function (map, ui) {
+	require(["map", "ui", "events", "jquery", "bootstrap", "starrating"], function (map, ui) {
 		map.initialize();
 		ui.initialize();
 	});

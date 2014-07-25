@@ -401,4 +401,4 @@
             $input.rating();
         }
     });
-}(JQuery));
+}($));
