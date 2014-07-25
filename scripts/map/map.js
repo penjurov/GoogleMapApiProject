@@ -90,7 +90,10 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 		});
 
 		used = true;
-		infowindow.close();
+
+		if (infowindow) {
+			infowindow.close();
+		}
 	};
 
 	// Return current way points

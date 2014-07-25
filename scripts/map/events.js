@@ -9,11 +9,9 @@ define(["jquery", "ui", "map"], function ($, ui, map) {
 		},100);
 	});
 
-	// Change to route View
+	// Change to destinations View
 	$('#destinationsLink').bind('click', function() {
-		$('#places-panel').hide();
-		$('#direction-panel').hide();
-		$('#destinations-panel').show();
+		ui.showDestinationsPanel();
 
 		changeActive($(this));
 		map.initialize();
@@ -31,14 +29,6 @@ define(["jquery", "ui", "map"], function ($, ui, map) {
 		}
 	});
 
-	// When click on close Button closes the current waypoint and removes it from waypoints array
-	$(document).on("click", ".closeButton", function(){
-		var self = $(this),
-			currentPoint = self.parent().find($('.wayPointName')).text();
-		ui.removePoint(self);
-		map.removePoint(currentPoint);
-	});
-
 	// Check if current waypoint is in the list, or if user input something in new waypoint field
 	var itemExists = function(point) {
 		if ($('.wayPointName:contains("'+ point +'")').length > 0) {
@@ -48,35 +38,38 @@ define(["jquery", "ui", "map"], function ($, ui, map) {
 		return false;
 	};
 
+	// When click on close Button closes the current waypoint and removes it from waypoints array
+	$(document).on("click", ".closeButton", function(){
+		var self = $(this),
+			currentPoint = self.parent().find($('.wayPointName')).text();
+		ui.removePoint(self);
+		map.removePoint(currentPoint);
+	});
+
 	// Calculation route on given points and showing instructions
 	$('#calcRoute').click(function() {
-		$('#destinations-panel').hide();
-		$('#direction-panel').show();
-
 		var start = $('#start').val(),
 			end = $('#end').val(),
 			selectedMode = $('#mode').val();
 
 		map.calcRoute(start, end, selectedMode);
+		ui.showDirectionsPanel();
 	});
 
 	// Change view between route instruction and adding route points
 	$('#editSearch').click(function() {
-		$('#direction-panel').hide();
-		$('#destinations-panel').show();
+		ui.showDestinationsPanel();
 	});
 
-	// Change to search places View
+	// Change the view to search places
 	$('#placesLink').bind('click', function() {
-		$('#destinations-panel').hide();
-		$('#direction-panel').hide();
-		$('#places-panel').show();
+		ui.showPlacesPanel();
 
 		changeActive($(this));
 		map.getCurrentLocation();
 	});
 
-	// Change current center of the map
+	// Change current center of the map to selected new location
 	$('#setLocation').click(function() {
 		map.setLocation($('#newLocation').val());
 		$('#newLocation').val('');
@@ -90,7 +83,7 @@ define(["jquery", "ui", "map"], function ($, ui, map) {
 		map.showPlaces(radius, types.value());
 	});
 
-	// Show selected place on the map
+	// Show selected top five place on the map
 	$(document).on("click", ".topFive-element", function(){
 		var latitude = $(this).find($('.latitude')).text(),
 			longitude = $(this).find($('.longitude')).text();

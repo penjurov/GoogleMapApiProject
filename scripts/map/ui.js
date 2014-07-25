@@ -11,18 +11,21 @@ define(["jquery", "places", "kendo", "handlebars"], function ($, places) {
 		button.className = button.className + "k-primary ";
 		button.style.height = '29px';
 
+	// Initialize the UI
 	var initialize = function() {
 		addPlaces(places);
 		convertToKendo();
 		$('.destinations').show();
 	};
 
+	// Adding place types from JSON array to Kendo multiselect
 	var addPlaces = function(items) {
 		handleBarConvert($('#places-template'), $('#places-container'), items);
 
 		$("#places-container").kendoMultiSelect().data("kendoMultiSelect");
 	};
 
+	// Converting all UI elements to Kendo
 	var convertToKendo = function() {
 		$(document).ready(function(){
 			$("#editSearch").kendoButton();
@@ -41,6 +44,27 @@ define(["jquery", "places", "kendo", "handlebars"], function ($, places) {
 		});
 	};
 
+	// Show only Directions panel
+	var showDirectionsPanel = function() {
+		$('#destinations-panel').hide();
+		$('#direction-panel').show();
+	};
+
+	// Show only Destinations panel
+	var showDestinationsPanel = function() {
+		$('#direction-panel').hide();
+		$('#places-panel').hide();
+		$('#destinations-panel').show();
+	};
+
+	// show only Places panel
+	var showPlacesPanel = function() {
+		$('#destinations-panel').hide();
+		$('#direction-panel').hide();
+		$('#places-panel').show();
+	};
+
+	// Adding Way Point elements in the DOM
 	var addPoint = function(location) {
 		var currentDiv = div.cloneNode(),
 			currentP = p.cloneNode(),
@@ -57,6 +81,7 @@ define(["jquery", "places", "kendo", "handlebars"], function ($, places) {
 		$('.closeButton').kendoButton();
 	};
 
+	// Removing selected waypoint elements from DOM
 	var removePoint = function(selector) {
 		var height = $('.destinations').height() - 25,
 			currentPoint = selector.parent().find($('.wayPointName')).text();
@@ -65,6 +90,7 @@ define(["jquery", "places", "kendo", "handlebars"], function ($, places) {
 		$('.destinations').height(height+'px');
 	};
 
+	// Adding top five place elements to DOM
 	var addTopFive = function(items) {
 		$('#topFive-container').text('');
 		if (items.length > 0) {
@@ -72,6 +98,7 @@ define(["jquery", "places", "kendo", "handlebars"], function ($, places) {
 		}
 	};
 
+	// Handlebar templates
 	function handleBarConvert(template, container, items) {
 		var currentTemplate = Handlebars.compile(template.html());
 
@@ -83,7 +110,10 @@ define(["jquery", "places", "kendo", "handlebars"], function ($, places) {
 	return {
 		initialize: initialize,
 		addPoint: addPoint,
+		removePoint: removePoint,
 		addTopFive: addTopFive,
-		removePoint: removePoint
+		showDestinationsPanel: showDestinationsPanel,
+		showDirectionsPanel: showDirectionsPanel,
+		showPlacesPanel: showPlacesPanel
 	};
 });
