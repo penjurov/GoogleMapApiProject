@@ -5,12 +5,12 @@
 	<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
 	<meta charset="utf-8">
 	<title>Google map API Project</title>
-	<link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet">
+
+	<link href="styles/bootstrap.css" rel="stylesheet">
 	<link href="styles/styles.css" rel="stylesheet" />	
     <link href="styles/kendo.common.min.css" rel="stylesheet" />
-    <link href="styles/kendo.blueopal.min.css" rel="stylesheet" />
-    <link href="styles/star-rating.css" media="all" rel="stylesheet" type="text/css"/>
-    <link href="styles/bootstrap.css" rel="stylesheet">
+    <link href="styles/kendo.blueopal.min.css" rel="stylesheet" />   
+    <link href="styles/star-rating.css" media="all" rel="stylesheet" type="text/css"/>   
 	<script src="scripts/libs/require.js" data-main="scripts/app"></script> 
 </head>
 	<body>
@@ -27,50 +27,52 @@
 	    </div>
 	    <div class="collapse navbar-collapse">
 	      <ul class="nav navbar-nav">
-	        <li class="active" id = "destinationsLink" ><a href="#Destinations">Destinations</a></li>
-	        <li id="placesLink"><a href="#Places">Search places</a></li>
+	        <li class="active" id = "destinationsLink" ><a href="#/Destinations">Destinations</a></li>
+	        <li id="placesLink"><a href="#/Places">Search places</a></li>
 	      </ul>
 	    </div>
 	  </div>
 	</div>	
-	<div id="map-canvas" class = "map-canvas" display = "none"></div>
-	<div id="app" class = "mainContainer">				
-		<div id = "destinations-panel" class="destinations panel">
-	    	<div>
-				<label>Starting:</label>
-				<input type="text" id = "start" class = "textfield" placeholder = "Input location"> 
-				<label>Waypoints:</label> 
-				<input type="text" id = "waypoint" class = "shortfield" placeholder = "Input location"> 
-				<button id="addWayPoint" class="k-primary addButton">+</button>
-				<div id="waypoints"> </div>
-				<label>Destination:</label> 
-				<input type="text" id = "end" class = "textfield" placeholder = "Input location">
-				<select id = "mode" class = "combobox">
-					<option value="DRIVING">Driving</option>
-					<option value="WALKING">Walking</option>
-					<option value="BICYCLING">Bycicle</option>
-					<option value="TRANSIT">Transit</option>
-				</select>
-				<button id="calcRoute" class="k-primary normalButton">Confirm</button>
+	<div class="container">
+		<div class = "row">
+			<div id="map-canvas" class = "map-canvas col-md-8"></div>
+			<div id="app" class = "mainContainer col-md-4">				
+				<div id = "destinations-panel" class="destinations panel">
+					<label>Starting:</label>
+					<input type="text" id = "start" class = "textfield" placeholder = "Input location"> 
+					<label>Waypoints:</label> 
+					<input type="text" id = "waypoint" class = "shortfield" placeholder = "Input location"> 
+					<button id="addWayPoint" class="k-primary addButton">+</button>
+					<div id="waypoints"> </div>
+					<label>Destination:</label> 
+					<input type="text" id = "end" class = "textfield" placeholder = "Input location">
+					<select id = "mode" class = "combobox">
+						<option value="DRIVING">Driving</option>
+						<option value="WALKING">Walking</option>
+						<option value="BICYCLING">Bycicle</option>
+						<option value="TRANSIT">Transit</option>
+					</select>
+					<button id="calcRoute" class="k-primary normalButton">Confirm</button>
+				</div>
+				<div class="direction panel" id="direction-panel">
+					<button id="editSearch" class="k-primary edit">Change routes</button>
+					<p>Total km: <span id="total"></span></p>
+				</div>
+				<div id = "places-panel" class="places panel">
+					<div class = "settings">
+						<label>Change location:</label>
+						<input type="text" id = "newLocation" class = "textfield" placeholder = "Input location"> 
+						<button id="setLocation" class="k-primary normalButton">Change</button>
+						<label>Search for:</label>
+						<select multiple = "multiple" id = "places-container" class = "listBox" data-placeholder="Select types...">				
+						</select>
+						<label>Distance:</label>
+						<input type="text" id = "locationDistance" class = "textfield" placeholder = "Input distance(default 1000m)">
+						<button id="findButton" class="k-primary normalButton">Find</button>
+					</div>
+					<div id="topFive-container" class = "topFive-container"></div>
+				</div>
 			</div>
-		</div>
-		<div class="direction panel" id="direction-panel">
-			<button id="editSearch" class="k-primary edit">Change routes</button>
-			<p>Total km: <span id="total"></span></p>
-		</div>
-		<div id = "places-panel" class="places panel">
-			<div>
-				<label>Change location:</label>
-				<input type="text" id = "newLocation" class = "textfield" placeholder = "Input location"> 
-				<button id="setLocation" class="k-primary normalButton">Change</button>
-				<label>Search for:</label>
-				<select multiple = "multiple" id = "places-container" class = "listBox" data-placeholder="Select types...">				
-				</select>
-				<label>Distance:</label>
-				<input type="text" id = "locationDistance" class = "textfield" placeholder = "Input distance(default 1000m)">
-				<button id="findButton" class="k-primary normalButton">Find</button>
-			</div>
-			<div id="topFive-container" class = "topFive-container"></div>
 		</div>
 	</div>
 	<script id="places-template" type="text/x-handlebars-template">

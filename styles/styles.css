@@ -1,35 +1,32 @@
 html, body {
 	margin: 0;
 	padding: 0;
-	width:100%;	
-	height: 96%;
-	background-color: #F7F7F8;
+	
 }
 
-.mainContainer {
+.row {
 	margin-top: 50px;
-	height: 100%;
-	width:100%;
-	background-color: #F7F7F8;
+	width: 100%;
 }
 
 .mainContainer .panel {
 	float: left;
 	background-color: #F7F7F8;
 	height: 100%;
+	width: 100%;
 }
+
+.mainContainer .destinations, .mainContainer .places {
+	height: 96%;
+	display : none;
+}
+
 
 .destinations label, .destinations .combobox, .destinations .textfield, .direction p, .places div{
 	margin-left: 5%;
 }
 
-.mainContainer .destinations {
-	height: 96%;
-	width:30%;
-	display : none;
-}
-
-.mainContainer .destinations .textfield, .mainContainer .places .textfield {
+.mainContainer .destinations .textfield, .mainContainer .places .textfield{
 	display : block;
 	float : left;
 	width : 90%;
@@ -47,7 +44,7 @@ html, body {
 }
 
 .mainContainer .destinations .combobox {
-	width : 58%;
+	width : 59%;
 	float : left;
 }
 
@@ -85,10 +82,18 @@ html, body {
 }
 
 .mainContainer .direction {	
-	height: 96%;
-	width: 30%;
 	overflow-y: scroll;
 	display : none;
+}
+
+.mainContainer .direction div {
+	text-align: center;	
+	width: 100%
+}
+
+.mainContainer .direction table {
+	text-align: center;	
+	width: 100%
 }
 
 .mainContainer .direction p {
@@ -96,6 +101,7 @@ html, body {
 	margin-left: 0;
 	margin-top: 10px;
 	padding: 0;
+	width: 100%
 }
 
 .mainContainer .direction .edit {
@@ -103,10 +109,8 @@ html, body {
 	width : 100%;
 }
 
-.mainContainer .places {
-	height: 96%;
-	width:30%;
-	display : none;
+.mainContainer .places .settings {
+	width: 100%;
 }
 
 .mainContainer .places .listBox {
@@ -125,7 +129,7 @@ html, body {
 
 .mainContainer .places .topFive-container {
 	float : left;
-	width : 90%;
+	width : 100%;
 }
 
 .mainContainer .places .topFive-element p {
@@ -153,9 +157,7 @@ html, body {
 }
 
 .map-canvas {
-	width: 70%;
-	float: left;
-    padding-bottom: 42.5%;
+    padding-bottom: 48%;
 }
 
 .adp-text {
@@ -165,4 +167,65 @@ html, body {
 
 .adp-summary, .adp-text {
 	text-align: center;
+}
+
+.infoWindow {
+	width: 400px;
+}
+
+.infoWindow img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+@media only screen and (max-width: 1000px) {
+	.map-canvas {
+    	padding-bottom: 60%;
+	}
+
+	.mainContainer .direction {
+		overflow-y: visible;
+		height: 100%;
+	}
+
+	.infoWindow {
+		width: 300px;
+	}
+
+}
+
+@media only screen and (max-width: 640px) {
+	.map-canvas {
+		margin-left: 3%;
+    	padding-bottom: 80%;
+	}
+
+	.mainContainer .direction {
+		overflow-y: visible;
+		height: 100%;
+	}
+
+	.infoWindow {
+		width: 250px;
+	}
+}
+
+@media only screen and (max-width: 480px) {
+	.map-canvas {
+		margin-left: 3%;
+    	padding-bottom: 100%;
+	}
+
+	.mainContainer .direction {
+		overflow-y: visible;
+		height: 100%;
+	}
+
+	.infoWindow {
+		width: 100px;
+	}
+
+	.infoWindow img {
+		display: none;
+	}
 }

@@ -14,7 +14,7 @@ define(["jquery", "ui", "map"], function ($, ui, map) {
 		ui.showDestinationsPanel();
 
 		changeActive($(this));
-		map.initialize();
+		map.getCurrentLocation(7);
 	});
 
 	// Add new waypoint in the route
@@ -66,7 +66,7 @@ define(["jquery", "ui", "map"], function ($, ui, map) {
 		ui.showPlacesPanel();
 
 		changeActive($(this));
-		map.getCurrentLocation();
+		map.getCurrentLocation(17);
 	});
 
 	// Change current center of the map to selected new location
@@ -96,6 +96,11 @@ define(["jquery", "ui", "map"], function ($, ui, map) {
 			longitude = $(this).parent().find(".endPointLongitude").text();
 
 		map.calcRoute('', '', "DRIVING", latitude, longitude);
+	});
+
+	$(window).resize(function(){
+		var height = $(window).height() - 75;
+		$('#direction-panel').height(height);
 	});
 
 	var changeActive = function(element) {

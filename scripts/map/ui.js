@@ -47,6 +47,8 @@ define(["jquery", "places", "kendo", "handlebars"], function ($, places) {
 	// Show only Directions panel
 	var showDirectionsPanel = function() {
 		$('#destinations-panel').hide();
+		var height = $(window).height() - 75;
+		$('#direction-panel').height(height);
 		$('#direction-panel').show();
 	};
 

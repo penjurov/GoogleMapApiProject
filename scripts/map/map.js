@@ -26,13 +26,15 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 	var initializeMap = function() {
 		var center = new google.maps.LatLng(CENTER_LATITUDE, CENTER_LONGITUDE),
 			mapOptions = {
-				zoom: 7,
+				zoom: 17,
 				center: center
 			};
 
 		directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
 		map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 	};
+
+
 
 	// Initilize search fields for autocomplete
 	var initializeSearchFields = function() {
@@ -124,13 +126,13 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 
 
 	// Retrieving current location of the user 
-	var getCurrentLocation = function() {
+	var getCurrentLocation = function(zoom) {
 		clearOverlays();
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(function (position) {
 				currentLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 				map.setCenter(currentLocation);
-				map.setZoom(17);
+				map.setZoom(zoom);
 			});
 		}
 
@@ -225,7 +227,7 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 	// Creating Info Window with place name, address, photo and rating.
 	// Containing information needed for Take me there button, such as current location and selected place Latitude, Longitude
 	var createInfoWindow = function(place, marker){
-		var content = '',
+		var content = '<div class= "infoWindow">',
 			title = '<strong class="infoName">' + place.name + "</strong> </br>",
 			button = document.createElement("Button");
 		
@@ -275,11 +277,14 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 
 		var longitude = '<p class = "endPointLongitude">' + place.geometry.location.B + '</p>';
 		content += longitude;
+
+		content += "</div>";
 	
 		infowindow = new google.maps.InfoWindow({
 			map: map,
 			position : marker.position,
-			content : content
+			content : content,
+			maxWidth: 2
 		});
 	};
 
