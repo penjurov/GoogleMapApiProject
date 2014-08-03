@@ -92,7 +92,11 @@
         	</br>
         	<em> {{vicinity}} </em>
         	</br>
-        	<em> rating : {{rating}} </em>
+        	<div class="star-rating rating-s rating-active"> 
+        		<div class="rating-container rating-gly-star" data-content="">
+        			<div class="rating-stars" data-content="" style="width:{{multiply rating 20}}%"></div>
+        		</div>
+        	</div>      	
         	<p class = "latitude"> {{geometry.location.k}}</p>
         	<p class = "longitude"> {{geometry.location.B}}</p>
         </div>

@@ -1,5 +1,4 @@
-define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&language=en",
-		"underscore", "starrating", "kendo"], function ($, ui) {
+define(["jquery", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&language=en"], function ($) {
 	'use strict';
 	var CENTER_LATITUDE = 42.52,
 		CENTER_LONGITUDE = 25.19,
@@ -13,7 +12,8 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 		waypts = [],
 		markersArray = [],
 		currentLocation,
-		infowindow;
+		infowindow,
+		mapPlaces;
 
 	// Initialize map module
 	var initialize = function() {
@@ -144,6 +144,7 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 		if (latitude) {
 			var center = new google.maps.LatLng(latitude, longitude);
 			map.setCenter(center);
+			map.setZoom(17);
 		}
 		else {
 			var geo = new google.maps.Geocoder();
@@ -152,7 +153,7 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 				if (status == google.maps.GeocoderStatus.OK) {
 					var center = results[0].geometry.location;
 					map.setCenter(center);
-					currentLocation = center;
+					map.setZoom(17);
 				} else {
 					alert("Geocode was not successful for the following reason: " + status);
 				}
@@ -167,7 +168,8 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 				location : map.center,
 				radius : radius,
 				types : types
-			};
+			},
+			topFiveByRating = [];
 
 		clearOverlays();
 		service.nearbySearch(request, callback);
@@ -193,7 +195,7 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 				});
 			});
 
-			getTopFive(places);
+			mapPlaces = places;
 		}
 	};
 
@@ -206,22 +208,9 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 		markersArray.length = 0;
 	}
 
-	// Showing top five places by rating
-	var getTopFive = function(places) {
-		var topFive = _.chain(places)
-			.filter(function(place){
-				if (place.rating) {
-					return true;
-				}
-
-				return false;
-			})
-			.sortBy(function(place) {
-				return place.rating * -1;
-			})
-			.value();
-
-		ui.addTopFive(topFive.slice(0, 5));
+	// Showing all places filtered by current seach
+	var getAllPlaces = function() {
+		return mapPlaces;
 	};
 
 	// Creating Info Window with place name, address, photo and rating.
@@ -320,6 +309,6 @@ define(["jquery", "ui", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&l
 		getCurrentLocation: getCurrentLocation,
 		setLocation: setLocation,
 		showPlaces: showPlaces,
-		getTopFive: getTopFive
+		getAllPlaces: getAllPlaces
 	};
 });

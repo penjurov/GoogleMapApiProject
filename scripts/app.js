@@ -1,15 +1,15 @@
 ﻿(function () {
 	require.config({
 		paths: {
-			"jquery": "libs/jquery.min",
+			jquery: "libs/jquery.min",
 			sammy: "libs/sammy-latest.min",
-			"bootstrap": "libs/bootstrap.min",
+			bootstrap: "libs/bootstrap.min",
 			kendo: "libs/kendo.web.min",
 			handlebars: "libs/handlebars",
 			underscore: "libs/underscore",
 			async: 'libs/async',
-			"starrating": 'libs/star-rating',
-			"map": "map/map",
+			starrating: 'libs/star-rating',
+			map: "map/map",
 			events : "map/events",
 			ui: "map/ui",
 			places : "map/places"

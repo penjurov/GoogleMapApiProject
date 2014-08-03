@@ -10,7 +10,7 @@ define(["jquery", "places", "kendo", "handlebars"], function ($, places) {
 		button.className = button.className + "closeButton ";
 		button.className = button.className + "k-primary ";
 		button.style.height = '29px';
-
+		
 	// Initialize the UI
 	var initialize = function() {
 		addPlaces(places);
@@ -47,6 +47,7 @@ define(["jquery", "places", "kendo", "handlebars"], function ($, places) {
 	// Show only Directions panel
 	var showDirectionsPanel = function() {
 		$('#destinations-panel').hide();
+		$('#places-panel').hide();
 		var height = $(window).height() - 75;
 		$('#direction-panel').height(height);
 		$('#direction-panel').show();
@@ -107,6 +108,11 @@ define(["jquery", "places", "kendo", "handlebars"], function ($, places) {
 
 	// Handlebar templates
 	function handleBarConvert(template, container, items) {
+		Handlebars.registerHelper('multiply', function (first, second) {
+			var result = first * second;
+			return result;
+		});
+
 		var currentTemplate = Handlebars.compile(template.html());
 
 		container.html(currentTemplate({

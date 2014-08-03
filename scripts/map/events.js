@@ -1,5 +1,7 @@
-define(["jquery", "ui", "map"], function ($, ui, map) {
+define(["jquery", "ui", "map", "underscore"], function ($, ui, map) {
 	'use strict';
+
+	var currentWindow;
 
 	// Initialize map again in 100 ms becouse on some resolution the center isn't correct
 	$(document).ready(function() {
@@ -21,7 +23,7 @@ define(["jquery", "ui", "map"], function ($, ui, map) {
 	$('#addWayPoint').click(function() {
 		var point = $('#waypoint').val(),
 			numberOfPoints = map.getPoints().length;
-			
+
 		if (numberOfPoints < 8 && !itemExists(point) && point.length !== 0) {
 			$('#waypoint').val('');
 			map.addPoint(point);
@@ -53,12 +55,20 @@ define(["jquery", "ui", "map"], function ($, ui, map) {
 			selectedMode = $('#mode').val();
 
 		map.calcRoute(start, end, selectedMode);
+		currentWindow = 'destinations';
 		ui.showDirectionsPanel();
 	});
 
 	// Change view between route instruction and adding route points
 	$('#editSearch').click(function() {
-		ui.showDestinationsPanel();
+		if (currentWindow === 'destinations') {
+			$('#direction-panel').hide();
+			$('#destinations-panel').show();
+		}
+		else if (currentWindow === 'places') {
+			$('#direction-panel').hide();
+			$('#places-panel').show();
+		}
 	});
 
 	// Change the view to search places
@@ -78,9 +88,17 @@ define(["jquery", "ui", "map"], function ($, ui, map) {
 	// Find places on given criteria
 	$('#findButton').click(function() {
 		var radius = $('#locationDistance').val() || 1000,
-			types = $("#places-container").data("kendoMultiSelect");
+			types = $("#places-container").data("kendoMultiSelect"),
+			places,
+			topFivePlacesByRating;
 
 		map.showPlaces(radius, types.value());
+
+		setTimeout(function() {
+			places = map.getAllPlaces();
+			topFivePlacesByRating = getTopFiveByRating(places);
+			ui.addTopFive(topFivePlacesByRating);
+		}, 500);
 	});
 
 	// Show selected top five place on the map
@@ -96,6 +114,8 @@ define(["jquery", "ui", "map"], function ($, ui, map) {
 			longitude = $(this).parent().find(".endPointLongitude").text();
 
 		map.calcRoute('', '', "DRIVING", latitude, longitude);
+		currentWindow = 'places';
+		ui.showDirectionsPanel();
 	});
 
 	$(window).resize(function(){
@@ -106,5 +126,26 @@ define(["jquery", "ui", "map"], function ($, ui, map) {
 	var changeActive = function(element) {
 		$('.active').removeClass('active');
 		element.addClass('active');
+	};
+
+	// Showing top five places by rating
+	var getTopFiveByRating = function(places) {
+		places = places || [];
+		
+		var	topFiveByRating = _.chain(places)
+			.filter(function(place){
+				if (place.rating) {
+					return true;
+				}
+
+				return false;
+			})
+			.sortBy(function(place) {
+				return place.rating * -1;
+			})
+			.value();
+
+		topFiveByRating = topFiveByRating.slice(0, 5);
+		return topFiveByRating;
 	};
 });

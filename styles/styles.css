@@ -18,7 +18,7 @@ html, body {
 
 .mainContainer .destinations, .mainContainer .places {
 	height: 96%;
-	display : none;
+	display: none;
 }
 
 
@@ -140,12 +140,17 @@ html, body {
 	width : 85%;	
 }
 
+.mainContainer .places .topFive-element div {
+	margin-left: 0;	
+}
+
 
 .mainContainer .places .topFive-element:hover {
 	float : left;
 	background-color: #98DCF8;
 	cursor: pointer; 
 }
+
 
 .startPoint, .endPointLatitude, .endPointLongitude {
 	display : none;
@@ -170,7 +175,7 @@ html, body {
 }
 
 .infoWindow {
-	width: 400px;
+	width: 300px;
 }
 
 .infoWindow img {
