@@ -14,7 +14,7 @@ define(["jquery", "ui", "map", "underscore"], function ($, ui, map) {
 	// Change to destinations View
 	$('#destinationsLink').bind('click', function() {
 		ui.showDestinationsPanel();
-
+		map.clearRoute();
 		changeActive($(this));
 		map.getCurrentLocation(7);
 	});
@@ -74,7 +74,7 @@ define(["jquery", "ui", "map", "underscore"], function ($, ui, map) {
 	// Change the view to search places
 	$('#placesLink').bind('click', function() {
 		ui.showPlacesPanel();
-
+		map.clearRoute();
 		changeActive($(this));
 		map.getCurrentLocation(17);
 	});

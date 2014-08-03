@@ -69,6 +69,7 @@ define(["jquery", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&librari
 
 	// Calculating routes by start/end string points, or by start point as current location and end LatLng point
 	var calcRoute = function(start, end, selectedMode, latitude, longitude) {
+		directionsDisplay.setMap(map);
 		if (end==='') {
 			end = new google.maps.LatLng(latitude, longitude);
 		}
@@ -96,6 +97,10 @@ define(["jquery", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&librari
 		if (infowindow) {
 			infowindow.close();
 		}
+	};
+
+	var clearRoute = function() {
+		directionsDisplay.setMap(null);
 	};
 
 	// Return current way points
@@ -303,6 +308,7 @@ define(["jquery", "async!https://maps.googleapis.com/maps/api/js?v=3.exp&librari
 	return {
 		initialize: initialize,
 		calcRoute: calcRoute,
+		clearRoute: clearRoute,
 		getPoints: getPoints,
 		addPoint: addPoint,
 		removePoint: removePoint,
